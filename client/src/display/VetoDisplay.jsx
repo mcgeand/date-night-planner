@@ -6,8 +6,8 @@ export default function VetoDisplay({ phase, config, entries, vetoLog, vetosRema
   const activeName = config.players[activePlayer];
 
   return (
-    <div style={{ animation: "fadeInUp 0.5s ease" }}>
-      <div style={{ textAlign: "center", marginBottom: "clamp(16px, 1.6vw, 28px)" }}>
+    <div style={{ animation: "fadeInUp 0.5s ease", display: "flex", flexDirection: "column", height: "calc(100vh - 140px)" }}>
+      <div style={{ textAlign: "center", marginBottom: "clamp(8px, 0.8vw, 14px)" }}>
         <div style={{
           display: "inline-block", padding: "clamp(8px, 0.8vw, 14px) clamp(24px, 2.4vw, 40px)", borderRadius: 999,
           background: PLAYER_COLORS[activePlayer], color: "white", fontWeight: 700,
@@ -30,7 +30,7 @@ export default function VetoDisplay({ phase, config, entries, vetoLog, vetosRema
         </div>
       )}
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "clamp(12px, 1.4vw, 24px)" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gridTemplateRows: "1fr 1fr", gap: "clamp(8px, 1vw, 16px)", flex: 1, minHeight: 0 }}>
         {CAT_NAMES.map(cat => {
           const meta = CATEGORY_META[cat];
           const p0 = entries?.[cat]?.[0] || [];
@@ -39,20 +39,22 @@ export default function VetoDisplay({ phase, config, entries, vetoLog, vetosRema
 
           return (
             <div key={cat} style={{
-              ...cardBase, padding: "clamp(12px, 1.4vw, 24px)",
+              ...cardBase, padding: "clamp(10px, 1vw, 18px)",
               border: `2px solid ${meta.color.border}40`,
               background: meta.color.bg + "40",
+              overflow: "auto", minHeight: 0,
+              display: "flex", flexDirection: "column",
             }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "clamp(6px, 0.6vw, 10px)", marginBottom: "clamp(8px, 1vw, 16px)" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "clamp(6px, 0.6vw, 10px)", marginBottom: "clamp(4px, 0.5vw, 8px)" }}>
                 <span style={{ fontSize: "clamp(20px, 1.8vw, 32px)" }}>{meta.emoji}</span>
                 <span style={{ fontWeight: 700, color: meta.color.text, fontSize: "clamp(14px, 1.3vw, 22px)" }}>{cat}</span>
               </div>
 
-              <div style={{ display: "flex", flexDirection: "column", gap: "clamp(4px, 0.5vw, 8px)" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "clamp(3px, 0.4vw, 6px)", flex: 1, minHeight: 0 }}>
                 {allItems.map((item, i) => (
                   <div key={i} style={{
                     display: "flex", alignItems: "center", gap: "clamp(6px, 0.6vw, 10px)",
-                    padding: "clamp(6px, 0.7vw, 12px) clamp(10px, 1vw, 18px)",
+                    padding: "clamp(4px, 0.5vw, 10px) clamp(8px, 0.8vw, 14px)",
                     borderRadius: 10, background: "white",
                     border: "1px solid #f0f0f0",
                   }}>
@@ -75,7 +77,7 @@ export default function VetoDisplay({ phase, config, entries, vetoLog, vetosRema
       </div>
 
       {vetoLog.length > 0 && (
-        <div style={{ ...cardBase, marginTop: "clamp(12px, 1.2vw, 20px)", padding: "clamp(14px, 1.4vw, 24px)" }}>
+        <div style={{ ...cardBase, marginTop: "clamp(6px, 0.6vw, 12px)", padding: "clamp(8px, 0.8vw, 14px)", flexShrink: 0, maxHeight: "15vh", overflow: "auto" }}>
           <h3 style={{ margin: "0 0 8px", fontSize: "clamp(14px, 1.2vw, 20px)", color: "#6b7280" }}>Veto Log</h3>
           {vetoLog.map((v, i) => (
             <div key={i} style={{ fontSize: "clamp(13px, 1.1vw, 20px)", color: "#374151", padding: "4px 0", borderBottom: "1px solid #f0f0f0" }}>

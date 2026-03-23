@@ -39,10 +39,33 @@ npm start        # Node serves everything on port 3000
 ## Docker
 
 ```bash
+docker run -d \
+  --name date-night-planner \
+  -p 3000:3000 \
+  -v ./data:/app/data \
+  --restart unless-stopped \
+  ghcr.io/mcgeand/date-night-planner:latest
+```
+
+Or with Docker Compose — create a `docker-compose.yml`:
+
+```yaml
+services:
+  date-night-planner:
+    image: ghcr.io/mcgeand/date-night-planner:latest
+    container_name: date-night-planner
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+```
+
+```bash
 docker compose up -d
 ```
 
-See [DEPLOYMENT.md](DEPLOYMENT.md) for full self-hosting instructions.
+The SQLite database is stored in the `data/` volume and auto-creates on first start.
 
 ## Tech Stack
 
@@ -71,7 +94,8 @@ client/src/
 ## Game Phases
 
 ```
-lobby → entry → veto-p1 → veto-p2 → swirl → eliminating → results → rate → done
+lobby → entry → [veto-p1 → veto-p2] → swirl → eliminating → results
 ```
+Veto phases are skipped when configured with 0 vetos. Rating is deferred — players rate dates later from the join screen.
 
 The server is the source of truth — all game mutations go through Socket.IO events validated server-side. Phones can reconnect mid-game via session tokens stored in sessionStorage.
