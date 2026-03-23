@@ -19,9 +19,13 @@ jobs:
       - name: Claude Code Review
         uses: anthropics/claude-code-action@beta
         with:
-          claude_code_oauth_token: ${{ secrets.ANTHROPIC_API_KEY }}
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           direct_prompt: |
-            Review the changes in this push/PR for bugs, security issues, and logic errors.
-            Be concise - only flag real problems, not style nits.
-            Focus on: correctness, security, and potential runtime errors.
+            You are reviewing a pull request. Perform a thorough code review:
+
+            1. Read ALL changed files in full, not just the diff hunks — understand the surrounding context.
+            2. For each change, evaluate: correctness, security (OWASP top 10), error handling, edge cases, and logic errors.
+            3. If configuration files are changed, validate that values are correct and consistent with the rest of the project.
+            4. Only report real problems with specific file and line references. Do not flag style nits or formatting.
+            5. If everything is genuinely clean, say so — but explain what you checked.
