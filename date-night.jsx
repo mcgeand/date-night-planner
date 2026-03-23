@@ -3,6 +3,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 /* ═══════════════════════════════════════════
    D.A.T.E. — Dinner · Activity · Treat · Entertainment
    A cozy MASH-inspired date night planner
+   v0.1.0
 
    Flow: Welcome → Setup → P1 Entry → P2 Entry → Review & Veto → Swirl → Eliminate → Results
    ═══════════════════════════════════════════ */
