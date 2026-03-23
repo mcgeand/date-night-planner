@@ -22,6 +22,7 @@ jobs:
         uses: anthropics/claude-code-action@beta
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           direct_prompt: |
             Review the changes in this push/PR for bugs, security issues, and logic errors.
             Be concise - only flag real problems, not style nits.
