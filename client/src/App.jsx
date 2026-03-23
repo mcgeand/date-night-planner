@@ -21,7 +21,7 @@ function RolePicker() {
       <div style={{ textAlign: "center", maxWidth: 400, animation: "fadeInUp 0.5s ease" }}>
         <div style={{ fontSize: 64, marginBottom: 8 }}>{"\u{1F495}"}</div>
         <h1 style={{ fontSize: 48, fontWeight: 800, margin: 0, background: "linear-gradient(135deg,#a855f7,#ec4899,#f59e0b)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>D.A.T.E.</h1>
-        <p style={{ color: "#6b7280", fontSize: 16, margin: "8px 0 32px" }}>Dinner \u00B7 Activity \u00B7 Treat \u00B7 Entertainment</p>
+        <p style={{ color: "#6b7280", fontSize: 16, margin: "8px 0 32px" }}>Dinner {"\u00B7"} Activity {"\u00B7"} Treat {"\u00B7"} Entertainment</p>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           <a href="/display" style={{

@@ -83,43 +83,45 @@ export default function EliminationScreen({ config, entries, elimNumber, elimRes
       const pauseDelay = dense ? 150 : medium ? 200 : 250;
 
       let pointer = 0;
+      let safety = 0;
 
-      while (!CAT_NAMES.every(cat => state[cat].chosen !== null)) {
+      while (!CAT_NAMES.every(cat => state[cat].chosen !== null) && safety < 200) {
+        safety++;
         const flat = buildFlatList();
         if (flat.length === 0) break;
 
-        let stepsLeft = elimNumber;
-        let pos = pointer % flat.length;
-
-        while (stepsLeft > 0) {
-          const slot = flat[pos % flat.length];
-          stepsLeft--;
-
-          if (stepsLeft > 0) {
-            setCountingCat(slot.cat);
-            setCountingIdx(slot.idx);
-            await new Promise(r => setTimeout(r, countDelay));
-            setCountingCat(null);
-            setCountingIdx(null);
-          }
-
-          if (stepsLeft === 0) {
-            setAnimCat(slot.cat); setAnimIdx(slot.idx);
-            await new Promise(r => setTimeout(r, elimDelay));
-
-            state[slot.cat].eliminated.add(slot.idx);
-            setCategories(prev => ({
-              ...prev,
-              [slot.cat]: { ...prev[slot.cat], eliminated: [...state[slot.cat].eliminated] },
-            }));
-
-            setAnimCat(null); setAnimIdx(null);
-            checkChosen();
-            await new Promise(r => setTimeout(r, pauseDelay));
-            pointer = pos;
-          }
-          pos++;
+        // Count forward — animate each step
+        for (let step = 0; step < elimNumber - 1; step++) {
+          const pos = (pointer + step) % flat.length;
+          const slot = flat[pos];
+          setCountingCat(slot.cat);
+          setCountingIdx(slot.idx);
+          await new Promise(r => setTimeout(r, countDelay));
+          setCountingCat(null);
+          setCountingIdx(null);
         }
+
+        // Land on the eliminated item (matches server: pointer + elimNumber - 1)
+        pointer = (pointer + elimNumber - 1) % flat.length;
+        const target = flat[pointer];
+
+        setAnimCat(target.cat); setAnimIdx(target.idx);
+        await new Promise(r => setTimeout(r, elimDelay));
+
+        state[target.cat].eliminated.add(target.idx);
+        setCategories(prev => ({
+          ...prev,
+          [target.cat]: { ...prev[target.cat], eliminated: [...state[target.cat].eliminated] },
+        }));
+
+        setAnimCat(null); setAnimIdx(null);
+        checkChosen();
+        await new Promise(r => setTimeout(r, pauseDelay));
+
+        // Rebuild flat list and adjust pointer (matches server logic exactly)
+        const newFlat = buildFlatList();
+        if (newFlat.length === 0) break;
+        pointer = pointer % newFlat.length;
       }
 
       checkChosen();

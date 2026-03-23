@@ -44,7 +44,7 @@ export function useGameState(socket) {
         if (data.vetoLog) setVetoLog(data.vetoLog);
         if (data.vetosRemaining) setVetosRemaining(data.vetosRemaining);
       },
-      "veto-pending": (data) => setPendingVeto(data),
+      "veto-pending": (data) => setPendingVeto(prev => prev?.needsReplacement ? prev : data),
       "request-replacement": (data) => setPendingVeto({ ...data, needsReplacement: true }),
       "swirl-progress": (data) => setSwirlProgress(data),
       "game-saved": (data) => setSavedEntry(data.historyEntry),
@@ -66,6 +66,7 @@ export function useGameState(socket) {
     setEntries(null);
     setEntryProgress({ p1Done: false, p2Done: false });
     setVetoLog([]);
+    setVetosRemaining({ p1: 0, p2: 0 });
     setPendingVeto(null);
     setSwirlProgress({ p1: null, p2: null });
     setElimData(null);

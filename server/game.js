@@ -149,6 +149,9 @@ export function handleGameEvent(io, socket, room, payload, db) {
       // Active player picks an item to veto
       const { cat, itemIdx } = payload;
       const vetoingSlot = socket.data.playerSlot;
+      // Only the active player for this phase can veto
+      if ((room.phase === "veto-p1" && vetoingSlot !== "p1") ||
+          (room.phase === "veto-p2" && vetoingSlot !== "p2")) break;
       const vetoedText = getItemText(room.entries, cat, itemIdx);
       room.pendingVeto = { cat, itemIdx, vetoedBy: vetoingSlot, vetoedText };
 
@@ -243,7 +246,9 @@ export function handleGameEvent(io, socket, room, payload, db) {
         room.elimResults = runElimination(room.entries, room.elimNumber);
 
         // 5 second delay so phones can show the combining animation
-        setTimeout(() => {
+        if (room.elimTimeout) clearTimeout(room.elimTimeout);
+        room.elimTimeout = setTimeout(() => {
+          room.elimTimeout = null;
           room.phase = "eliminating";
           io.to(room.roomCode).emit("phase-change", {
             phase: "eliminating",
@@ -308,6 +313,7 @@ export function handleGameEvent(io, socket, room, payload, db) {
     }
 
     case "play-again": {
+      if (room.elimTimeout) { clearTimeout(room.elimTimeout); room.elimTimeout = null; }
       room.swirlNumbers = { p1: null, p2: null };
       room.elimNumber = null;
       room.elimResults = null;
@@ -317,6 +323,7 @@ export function handleGameEvent(io, socket, room, payload, db) {
     }
 
     case "fresh-start": {
+      if (room.elimTimeout) { clearTimeout(room.elimTimeout); room.elimTimeout = null; }
       const entries = {};
       CAT_NAMES.forEach(c => { entries[c] = { 0: [], 1: [] }; });
       room.entries = entries;
