@@ -1,0 +1,15 @@
+services:
+  date-night-planner:
+    image: ghcr.io/mcgeand/date-night-planner:latest
+    container_name: date-night-planner
+    ports:
+      - "3000:3000"
+    volumes:
+      - /opt/appdata/date-night-planner/data:/app/data
+    environment:
+      - TZ=Europe/Dublin
+      - PUID=1000
+      - PGID=100
+    restart: unless-stopped
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
