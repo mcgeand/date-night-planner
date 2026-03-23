@@ -9,3 +9,5 @@ data/
 *.log
 .env
 .env.local
+DEPLOYMENT.md
+date-night.jsx

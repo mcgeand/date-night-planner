@@ -120,4 +120,4 @@ client/src/
 - Feature branches off `dev`, PRs into `dev`
 
 ## Legacy
-- `date-night.jsx` — original single-file app (preserved for reference)
+- `date-night.jsx` — original single-file app (removed from repo, preserved in git history and locally)
