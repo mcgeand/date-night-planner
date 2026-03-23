@@ -8,8 +8,6 @@ services:
       - /opt/appdata/date-night-planner/data:/app/data
     environment:
       - TZ=Europe/Dublin
-      - PUID=1000
-      - PGID=100
     restart: unless-stopped
     labels:
       - "com.centurylinklabs.watchtower.enable=true"

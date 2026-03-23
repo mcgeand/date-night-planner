@@ -27,9 +27,9 @@ export function useGameState(socket) {
         if (data.vetoLog) setVetoLog(data.vetoLog);
         if (data.vetosRemaining) setVetosRemaining(data.vetosRemaining);
         if (data.elimNumber !== undefined) {
-          setElimData({ elimNumber: data.elimNumber, entries: data.entries });
+          setElimData(data.elimNumber !== null ? { elimNumber: data.elimNumber, entries: data.entries } : null);
         }
-        if (data.elimResults) setElimResults(data.elimResults);
+        if ("elimResults" in data) setElimResults(data.elimResults);
       },
       "player-joined": (data) => {
         setPlayersConnected(data.playersConnected);

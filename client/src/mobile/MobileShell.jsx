@@ -26,6 +26,13 @@ export default function MobileShell({ connected, emit, on, gameEvent, gameState 
 
   const playerIdx = playerSlot === "p1" ? 0 : 1;
 
+  // Reset submission flag when we leave entry phase
+  useEffect(() => {
+    if (hasSubmittedEntries && phase !== "entry") {
+      setHasSubmittedEntries(false);
+    }
+  }, [hasSubmittedEntries, phase]);
+
   const handleJoin = (code, name) => {
     emit("join-room", { roomCode: code, playerName: name, sessionToken }, (res) => {
       if (res.error) {
@@ -74,11 +81,6 @@ export default function MobileShell({ connected, emit, on, gameEvent, gameState 
         setHasSubmittedEntries(true);
       }}
     />;
-  }
-
-  // Reset submission flag when we leave entry phase
-  if (hasSubmittedEntries && phase !== "entry") {
-    setHasSubmittedEntries(false);
   }
 
   // Veto phases

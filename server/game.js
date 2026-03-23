@@ -148,11 +148,9 @@ export function handleGameEvent(io, socket, room, payload, db) {
     case "veto-action": {
       // Active player picks an item to veto
       const { cat, itemIdx } = payload;
-      room.pendingVeto = { cat, itemIdx, vetoedBy: socket.data.playerSlot };
-
-      // Determine which player needs to provide replacement
       const vetoingSlot = socket.data.playerSlot;
-      const ownerIdx = room.entries[cat][0].includes(room.entries[cat][0][itemIdx]) ? 0 : 1;
+      const vetoedText = getItemText(room.entries, cat, itemIdx);
+      room.pendingVeto = { cat, itemIdx, vetoedBy: vetoingSlot, vetoedText };
 
       // Tell the veto-ee to provide a replacement
       const targetSlot = vetoingSlot === "p1" ? "p2" : "p1";
@@ -217,6 +215,10 @@ export function handleGameEvent(io, socket, room, payload, db) {
           phase: "veto-p2",
           entries: room.entries,
           vetoLog: room.vetoLog,
+          vetosRemaining: {
+            p1: room.config.vetosPerPerson - room.vetos.p1.length,
+            p2: room.config.vetosPerPerson - room.vetos.p2.length,
+          },
         });
       } else if (room.phase === "veto-p2" && slot === "p2") {
         room.phase = "swirl";
@@ -255,6 +257,9 @@ export function handleGameEvent(io, socket, room, payload, db) {
     }
 
     case "elimination-done": {
+      // Only process once — both display and phone can fire this event
+      if (room.phase !== "eliminating") break;
+
       // Save the date plan to DB immediately (unrated) so they can go enjoy it
       const categories = {};
       for (const cat of CAT_NAMES) {
@@ -307,7 +312,7 @@ export function handleGameEvent(io, socket, room, payload, db) {
       room.elimNumber = null;
       room.elimResults = null;
       room.phase = "swirl";
-      io.to(room.roomCode).emit("phase-change", { phase: "swirl" });
+      io.to(room.roomCode).emit("phase-change", { phase: "swirl", elimResults: null, elimNumber: null });
       break;
     }
 

@@ -108,6 +108,23 @@ io.on("connection", (socket) => {
 
     callback({ playerSlot: result.playerSlot, sessionToken: result.sessionToken });
     console.log(`${playerName} joined ${roomCode} as ${result.playerSlot}`);
+
+    // Replay current game state for reconnecting players
+    const room = getRoom(roomCode);
+    if (room && room.phase !== "lobby") {
+      socket.emit("phase-change", {
+        phase: room.phase,
+        config: room.config,
+        entries: room.entries,
+        vetoLog: room.vetoLog,
+        vetosRemaining: room.vetos ? {
+          p1: room.config.vetosPerPerson - room.vetos.p1.length,
+          p2: room.config.vetosPerPerson - room.vetos.p2.length,
+        } : undefined,
+        elimNumber: room.elimNumber,
+        elimResults: room.elimResults,
+      });
+    }
   });
 
   // Game events
